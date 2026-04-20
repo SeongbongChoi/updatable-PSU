@@ -1,5 +1,6 @@
 ## Overview
-This repository contains the implementation of the updatable private set union (uPSU) protocol proposed in the paper "Updatable Private Set Union: Generic Construction with Efficient Instantiation".
+This repository contains the implementation of the updatable private set union (uPSU) protocol proposed in the paper "Updatable Private Set Union: Generic Construction with Efficient Instantiation". 
+The implementation is built on top of the [volePSI](https://github.com/Visa-Research/volepsi) library.
 
 For performance comparison, this repository also includes the following baseline PSU protocols:
 - **TBZ+25** (Tu et al., USENIX Security 2025): [original repository](https://doi.org/10.5281/zenodo.14725816)
