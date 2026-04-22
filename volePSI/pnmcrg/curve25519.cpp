@@ -7,17 +7,19 @@
 // APSU
 #include "curve25519.h"
 
-// X25519() is exported by libcrypto (both OpenSSL 1.1 and 3.x static archives).
-// Its public header is not installed, so we declare the prototype directly.
-// This bypasses the EVP framework's per-call allocation overhead, which would
-// otherwise double the cost of every scalar multiplication.
-extern "C" int X25519(uint8_t out_shared_key[32],
-                      const uint8_t private_key[32],
-                      const uint8_t peer_public_value[32]);
+// x25519_scalar_mult is the internal dispatcher inside OpenSSL's
+// crypto/ec/curve25519.c (it picks BMI2/ADX mulx or the portable path).
+// thirdparty/getOpenSSL.cmake patches this function to drop its `static`
+// qualifier so it is exported from the resulting libcrypto.a.  Calling it
+// directly avoids the EVP framework's per-call allocation overhead, which
+// otherwise nearly doubles the cost of every scalar multiplication.
+extern "C" void x25519_scalar_mult(uint8_t out[32],
+                                   const uint8_t scalar[32],
+                                   const uint8_t point[32]);
 
 void x25519_scalar_mulx(uint8_t out[32], const uint8_t scalar[32], const uint8_t point[32])
 {
-    X25519(out, scalar, point);
+    x25519_scalar_mult(out, scalar, point);
 }
 
 // initialize as a all zero byte array
