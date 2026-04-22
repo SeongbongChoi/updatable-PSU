@@ -7,12 +7,6 @@
 // APSU
 #include "curve25519.h"
 
-// x25519_scalar_mult is the internal dispatcher inside OpenSSL's
-// crypto/ec/curve25519.c (it picks BMI2/ADX mulx or the portable path).
-// thirdparty/getOpenSSL.cmake patches this function to drop its `static`
-// qualifier so it is exported from the resulting libcrypto.a.  Calling it
-// directly avoids the EVP framework's per-call allocation overhead, which
-// otherwise nearly doubles the cost of every scalar multiplication.
 extern "C" void x25519_scalar_mult(uint8_t out[32],
                                    const uint8_t scalar[32],
                                    const uint8_t point[32]);
