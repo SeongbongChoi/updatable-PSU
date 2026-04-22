@@ -7,44 +7,17 @@
 // APSU
 #include "curve25519.h"
 
-#include <openssl/evp.h>
-#include <openssl/ec.h>
+// X25519() is exported by libcrypto (both OpenSSL 1.1 and 3.x static archives).
+// Its public header is not installed, so we declare the prototype directly.
+// This bypasses the EVP framework's per-call allocation overhead, which would
+// otherwise double the cost of every scalar multiplication.
+extern "C" int X25519(uint8_t out_shared_key[32],
+                      const uint8_t private_key[32],
+                      const uint8_t peer_public_value[32]);
 
-// x25519_scalar_mulx implementation using OpenSSL
 void x25519_scalar_mulx(uint8_t out[32], const uint8_t scalar[32], const uint8_t point[32])
 {
-    EVP_PKEY_CTX *ctx = NULL;
-    EVP_PKEY *pkey = NULL;
-    EVP_PKEY *peerkey = NULL;
-    size_t outlen = 32;
-    
-    // Create private key from scalar
-    pkey = EVP_PKEY_new_raw_private_key(EVP_PKEY_X25519, NULL, scalar, 32);
-    if (!pkey) goto cleanup;
-    
-    // Create public key from point  
-    peerkey = EVP_PKEY_new_raw_public_key(EVP_PKEY_X25519, NULL, point, 32);
-    if (!peerkey) goto cleanup;
-    
-    // Create context for key derivation
-    ctx = EVP_PKEY_CTX_new(pkey, NULL);
-    if (!ctx) goto cleanup;
-    
-    // Initialize derivation
-    if (EVP_PKEY_derive_init(ctx) <= 0) goto cleanup;
-    
-    // Set peer key
-    if (EVP_PKEY_derive_set_peer(ctx, peerkey) <= 0) goto cleanup;
-    
-    // Derive shared secret (scalar multiplication result)
-    if (EVP_PKEY_derive(ctx, out, &outlen) <= 0) {
-        memset(out, 0, 32);
-    }
-    
-cleanup:
-    if (ctx) EVP_PKEY_CTX_free(ctx);
-    if (pkey) EVP_PKEY_free(pkey);
-    if (peerkey) EVP_PKEY_free(peerkey);
+    X25519(out, scalar, point);
 }
 
 // initialize as a all zero byte array
