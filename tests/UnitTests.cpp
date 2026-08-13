@@ -29,6 +29,7 @@ namespace volePSI_Tests
         t.add("Psu_TBZ25_perf_test           ", Psu_TBZ25_perf_test);
         t.add("Psu_KLS26_perf_test           ", Psu_KLS26_perf_test);
         t.add("PSU_update_test               ", PSU_update_test);
+        t.add("Psi_RR22_perf_test            ", Psi_RR22_perf_test);
 
 #endif
 

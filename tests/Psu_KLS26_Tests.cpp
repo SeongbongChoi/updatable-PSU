@@ -201,32 +201,37 @@ namespace volePSI
         recver.setTimer(r);
         sender.setTimer(s);
 
-        timer.setTimePoint("init_start");
-        s.setTimePoint("init_start");
-        r.setTimePoint("init_start");
+        // The parties come into the update with the state they hold from the previous
+        // epoch: their own sets, and on the receiver's side the union together with the
+        // sender-only elements it learned when that union was formed.
+        // Xold and Yold are sorted above, so set_difference/set_union apply.
+        sender.X.assign(Xold.begin(), Xold.end());
+        recver.Y.assign(Yold.begin(), Yold.end());
 
-        auto p0_init = recver.recv(Yold, sockets[0]);
-        auto p1_init = sender.send(Xold, sockets[1]);
+        std::set_difference(
+            Xold.begin(), Xold.end(),
+            Yold.begin(), Yold.end(),
+            std::back_inserter(recver.XminusY));
 
-        eval(p0_init, p1_init);
-        timer.setTimePoint("init_end");
+        std::set_union(
+            Xold.begin(), Xold.end(),
+            Yold.begin(), Yold.end(),
+            std::back_inserter(recver.U));
 
         u64 initialUnionSize = recver.U.size();
-        u64 initial_bytes = sockets[0].bytesSent() + sockets[1].bytesSent();
 
-        timer.setTimePoint("update_start");
-        s.setTimePoint("update_start");
-        r.setTimePoint("update_start");
+        timer.setTimePoint("start");
+        s.setTimePoint("start");
+        r.setTimePoint("start");
 
         auto p0_update = recver.urecv(Yadd, Ydel, sockets[0]);
         auto p1_update = sender.usend(Xadd, Xdel, sockets[1]);
         eval(p0_update, p1_update);
 
-        timer.setTimePoint("update_end");
+        timer.setTimePoint("end");
 
         u64 finalUnionSize = recver.U.size();
         u64 total_bytes = sockets[0].bytesSent() + sockets[1].bytesSent();
-        u64 update_bytes = total_bytes - initial_bytes;
 
         bool initialUnionCorrect = (initialUnionSize == expectedInitialUnion.size());
         bool finalUnionCorrect = (finalUnionSize == expectedFinalUnion.size());
@@ -248,9 +253,9 @@ namespace volePSI
 
         std::cout << "\n=== Test Results ===" << std::endl;
         std::cout << "\n=== Union Verification ===" << std::endl;
-        std::cout << "Expected initial: " << expectedInitialUnion.size()
-                  << " | Actual: " << initialUnionSize
-                  << " | " << (initialUnionCorrect ? "PASS" : "FAIL") << std::endl;
+        std::cout << "Initial union:    " << expectedInitialUnion.size()
+                  << " | Held: " << initialUnionSize
+                  << " | " << (initialUnionCorrect ? "OK" : "MISMATCH") << std::endl;
         std::cout << "Expected final:   " << expectedFinalUnion.size()
                   << " | Actual: " << finalUnionSize
                   << " | " << (finalUnionCorrect ? "PASS" : "FAIL") << std::endl;
@@ -270,9 +275,12 @@ namespace volePSI
         }
 
         std::cout << "\n=== Performance ===" << std::endl;
-        std::cout << "Initial comm: " << (double)initial_bytes / (1 << 20) << " MB" << std::endl;
-        std::cout << "Update comm:  " << (double)update_bytes / (1 << 20) << " MB" << std::endl;
-        std::cout << "Total comm:   " << (double)total_bytes / (1 << 20) << " MB" << std::endl;
+        std::cout << "Total Comm = " << (double)total_bytes / (1 << 20) << " MB ("
+                  << (double)total_bytes / (1 << 10) << " KB)" << std::endl;
+        std::cout << "Sender Comm = " << (double)sockets[1].bytesSent() / (1 << 20) << " MB ("
+                  << (double)sockets[1].bytesSent() / (1 << 10) << " KB)" << std::endl;
+        std::cout << "Receiver Comm = " << (double)sockets[0].bytesSent() / (1 << 20) << " MB ("
+                  << (double)sockets[0].bytesSent() / (1 << 10) << " KB)" << std::endl;
         std::cout << "\nTotal Time: " << timer << std::endl;
         std::cout << "Sender Timer:\n"
                   << s << std::endl;

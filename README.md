@@ -44,6 +44,7 @@ Available tests:
 0 - Psu_TBZ25_perf_test    (TBZ+25, USENIX Security 2025)
 1 - Psu_KLS26_perf_test    (KLS26, ACM SAC 2026)
 2 - PSU_update_test        (Updatable PSU)
+3 - Psi_RR22_perf_test     (RR22, ACM CCS 2022)
 ```
 
 Example usage (PSU — TBZ25):
@@ -62,4 +63,13 @@ Example usage (Updatable PSU):
 nn: the log2 size of the sets, tt: the log2 size of the updated sets
 ```
 ./frontend -u 2 -nn 20 -tt 6
+```
+This measures the cost of one update. The parties start from the state they
+hold after the previous epoch, so the initial union is not recomputed; the cost
+of forming that union is the full PSU, which `-u 1` measures.
+
+Example usage (PSI — RR22):
+nn: the log2 size of sender's set, mm: the log2 size of receiver's set
+```
+./frontend -u 3 -nn 20 -mm 20
 ```
