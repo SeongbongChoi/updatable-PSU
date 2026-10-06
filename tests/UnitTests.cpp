@@ -9,7 +9,6 @@
 #include "RsOpprf_Tests.h"
 #include "RsPsi_Tests.h"
 #include "Psu_KLS26_Tests.h"
-#include "Psu_TBZ25_Tests.h"
 #include "GMW_Tests.h"
 #include "volePSI/GMW/Circuit.h"
 #include "FileBase_Tests.h"
@@ -26,7 +25,6 @@ namespace volePSI_Tests
         // t.add("Cpsi_Rs_full_asym_test      ", Cpsi_Rs_full_asym_test);
         // t.add("Cpsi_Rs_full_add32_test     ", Cpsi_Rs_full_add32_test);
 
-        t.add("Psu_TBZ25_perf_test           ", Psu_TBZ25_perf_test);
         t.add("Psu_KLS26_perf_test           ", Psu_KLS26_perf_test);
         t.add("PSU_update_test               ", PSU_update_test);
         t.add("Psi_RR22_perf_test            ", Psi_RR22_perf_test);

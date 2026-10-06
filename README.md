@@ -2,8 +2,7 @@
 This repository contains the implementation of the updatable private set union (uPSU) protocol proposed in the paper "Updatable Private Set Union: Generic Construction with Efficient Instantiation". 
 The implementation is built on top of the [volePSI](https://github.com/Visa-Research/volepsi) library.
 
-For performance comparison, this repository also includes the following baseline PSU protocols:
-- **TBZ+25** (Tu et al., USENIX Security 2025): [original repository](https://doi.org/10.5281/zenodo.14725816)
+For performance comparison, this repository also includes the following baseline PSU protocol:
 - **KLS26** (Kim et al., ACM SAC 2026): [original repository](https://github.com/yonghaason/volepsi)
   
 ### Build
@@ -41,35 +40,28 @@ List available tests:
 
 Available tests:
 ```
-0 - Psu_TBZ25_perf_test    (TBZ+25, USENIX Security 2025)
-1 - Psu_KLS26_perf_test    (KLS26, ACM SAC 2026)
-2 - PSU_update_test        (Updatable PSU)
-3 - Psi_RR22_perf_test     (RR22, ACM CCS 2022)
-```
-
-Example usage (PSU — TBZ25):
-nn: the log2 size of sender's set, mm: the log2 size of receiver's set
-```
-./frontend -u 0 -nn 20 -mm 20
+0 - Psu_KLS26_perf_test    (KLS26, ACM SAC 2026)
+1 - PSU_update_test        (Updatable PSU)
+2 - Psi_RR22_perf_test     (RR22, ACM CCS 2022)
 ```
 
 Example usage (PSU — KLS26):
 nn: the log2 size of sender's set, mm: the log2 size of receiver's set
 ```
-./frontend -u 1 -nn 20 -mm 20
+./frontend -u 0 -nn 20 -mm 20
 ```
 
 Example usage (Updatable PSU):
 nn: the log2 size of the sets, tt: the log2 size of the updated sets
 ```
-./frontend -u 2 -nn 20 -tt 6
+./frontend -u 1 -nn 20 -tt 6
 ```
 This measures the cost of one update. The parties start from the state they
 hold after the previous epoch, so the initial union is not recomputed; the cost
-of forming that union is the full PSU, which `-u 1` measures.
+of forming that union is the full PSU, which `-u 0` measures.
 
 Example usage (PSI — RR22):
 nn: the log2 size of sender's set, mm: the log2 size of receiver's set
 ```
-./frontend -u 3 -nn 20 -mm 20
+./frontend -u 2 -nn 20 -mm 20
 ```

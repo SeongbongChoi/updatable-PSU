@@ -11,11 +11,6 @@ set(SRCS
     "PS/benes.cpp"
     "PS/PSReceiver.cpp"
     "PS/PSSender.cpp"
-
-    "pnmcrg/curve25519.cpp"
-    "pnmcrg/pnMCRG.cpp"
-    "pnmcrg/ssPEQT.cpp"
-    "pnmcrg/ssROT.cpp"
     )
 
 if(VOLE_PSI_ENABLE_GMW)
@@ -31,7 +26,6 @@ if(VOLE_PSI_ENABLE_CPSI)
         "RsCpsi.cpp"
         "Psu_KLS26.cpp"
         "UPsu.cpp"
-        "Psu_TBZ25.cpp"
     )
 endif()
 
@@ -46,7 +40,6 @@ target_link_libraries(volePSI
     oc::libOTe 
     sparsehash 
     libdivide
-    OpenSSL::Crypto
     OpenMP::OpenMP_CXX
 )
 

@@ -162,7 +162,7 @@ void Psi_Rs_mal_test(const CLP& cmd)
 
 // ---------------------------------------------------------------------------
 // RR22 (Rindal-Raghuraman, CCS'22) PSI performance baseline. Output format
-// matches Psu_TBZ25_perf_test / Psu_KLS26_perf_test so run_updatable.sh parses
+// matches Psu_KLS26_perf_test so run_updatable.sh parses
 // it unchanged.
 // ---------------------------------------------------------------------------
 void Psi_RR22_perf_test(const oc::CLP &cmd)

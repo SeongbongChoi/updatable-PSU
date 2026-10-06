@@ -117,38 +117,5 @@ endif()
 
 FIND_LIBOTE(REQUIRED)
 
-#######################################
-# OpenSSL
-#######################################
-
-set(OPENSSL_LIB_PATH_64 "${VOLEPSI_THIRDPARTY_DIR}/lib64/libcrypto.a")
-set(OPENSSL_LIB_PATH_32 "${VOLEPSI_THIRDPARTY_DIR}/lib/libcrypto.a")
-
-if(NOT EXISTS ${OPENSSL_LIB_PATH_64} AND NOT EXISTS ${OPENSSL_LIB_PATH_32})
-    message(STATUS "OpenSSL not found, building...")
-    include(${CMAKE_CURRENT_LIST_DIR}/../thirdparty/getOpenSSL.cmake)
-endif()
-
-if(EXISTS ${OPENSSL_LIB_PATH_64})
-    set(OPENSSL_LIB_PATH ${OPENSSL_LIB_PATH_64})
-elseif(EXISTS ${OPENSSL_LIB_PATH_32})
-    set(OPENSSL_LIB_PATH ${OPENSSL_LIB_PATH_32})
-else()
-    message(FATAL_ERROR "OpenSSL library not found after build attempt")
-endif()
-
-if(NOT TARGET OpenSSL::Crypto)
-    add_library(OpenSSL::Crypto STATIC IMPORTED)
-    set_target_properties(OpenSSL::Crypto PROPERTIES
-        IMPORTED_LOCATION ${OPENSSL_LIB_PATH}
-    )
-    target_include_directories(OpenSSL::Crypto SYSTEM INTERFACE 
-        ${VOLEPSI_THIRDPARTY_DIR}/include)
-    target_link_libraries(OpenSSL::Crypto INTERFACE 
-        ${CMAKE_DL_LIBS} pthread)
-    
-    message(STATUS "OpenSSL configured: ${OPENSSL_LIB_PATH}")
-endif()
-
 # resort the previous prefix path
 set(CMAKE_PREFIX_PATH ${PUSHED_CMAKE_PREFIX_PATH})

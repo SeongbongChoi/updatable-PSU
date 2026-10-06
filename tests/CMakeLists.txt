@@ -23,7 +23,6 @@ if(VOLE_PSI_ENABLE_CPSI)
     list(APPEND SRCS
         "RsCpsi_Tests.cpp"
         "Psu_KLS26_Tests.cpp"
-        "Psu_TBZ25_Tests.cpp"
     )
 endif()
 if(VOLE_PSI_ENABLE_OPPRF)

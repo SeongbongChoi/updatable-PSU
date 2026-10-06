@@ -17,6 +17,11 @@ def getParallel(args):
     return (args,par)
 
 
+def run(cmd):
+    if cmd and os.system(cmd) != 0:
+        sys.exit("build.py: failed: " + cmd)
+
+
 def replace(list, find, replace):
     if find in list:
         idx = list.index(find)
@@ -86,16 +91,16 @@ def Build(projectName, argv, install, par, sudo, noConfig):
     print("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n\n")
 
     if not noConfig:
-        os.system(mkDirCmd)
-        os.system(CMakeCmd)
+        run(mkDirCmd)
+        run(CMakeCmd)
 
     if not setup:
-        os.system(BuildCmd)
+        run(BuildCmd)
 
         if len(sudo) > 0:
             print("installing "+projectName+": {0}\n".format(InstallCmd))
 
-        os.system(InstallCmd)
+        run(InstallCmd)
 
 
 

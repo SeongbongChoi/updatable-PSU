@@ -1,6 +1,0 @@
-# build.py puts the build tree and every fetched dependency here (~4 GB)
-out/
-
-# benchmark artifacts
-*.csv
-*.log
